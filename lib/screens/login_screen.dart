@@ -118,11 +118,11 @@ class _LoginForm extends StatelessWidget {
                   FocusScope.of(context).unfocus(); // Quitar el teclado
                   if (!loginForm.isValidForm()) return;
                   loginForm.isLoading = true;
-                  await Future.delayed(Duration(seconds: 5));
+                  await Future.delayed(const Duration(seconds: 5));
                   // TODO:  Validar si el login es correcto
                   loginForm.isLoading = false;
                   
-                  // Navigator.pushReplacementNamed(context, HomeScreen.routerName);
+                  Navigator.pushReplacementNamed(context, HomeScreen.routerName);
                 },
                 child: Container(
                   padding:
