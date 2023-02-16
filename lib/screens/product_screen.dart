@@ -14,12 +14,12 @@ class ProductScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                ProductImage(),
+                const ProductImage(),
                 Positioned(
                   top: 60,
                   left: 20,
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.arrow_back_ios_new,
                       size: 40,
                       color: Colors.white,
@@ -31,7 +31,7 @@ class ProductScreen extends StatelessWidget {
                   top: 60,
                   right: 20,
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.camera_alt_outlined,
                       size: 40,
                       color: Colors.white,
@@ -43,15 +43,15 @@ class ProductScreen extends StatelessWidget {
                 ),
               ],
             ),
-            _ProductForm(),
-            SizedBox(
+            const _ProductForm(),
+            const SizedBox(
               height: 100,
             )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.save_outlined),
+        child: const Icon(Icons.save_outlined),
         onPressed: () {
           // TODO Guarar producto
         },
@@ -70,13 +70,13 @@ class _ProductForm extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: _buildBoxDecoration(),
         width: double.infinity,
         child: Form(
             child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             TextFormField(
@@ -85,7 +85,7 @@ class _ProductForm extends StatelessWidget {
                 labelText: 'Nombre:',
               ),
             ),
-            SizedBox(height: 30,),
+            const SizedBox(height: 30,),
             TextFormField(
               decoration: InputDecorations.authInputDecoration(
                 hintText: '\$150',
@@ -93,18 +93,18 @@ class _ProductForm extends StatelessWidget {
               ),
               keyboardType: TextInputType.number,
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             SwitchListTile(
               value: true, 
               activeColor: Colors.indigo,
-              title: Text("Disponible"),
+              title: const Text("Disponible"),
               onChanged: (value) {
                 
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             )
           ],
