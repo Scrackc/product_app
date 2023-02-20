@@ -5,6 +5,7 @@ import 'package:productos_app/services/services.dart';
 import 'package:productos_app/ui/input_decorations.dart';
 import 'package:productos_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProductScreen extends StatelessWidget {
   static const String routerName = 'product-screen';
@@ -62,8 +63,14 @@ class _ProductScreenBody extends StatelessWidget {
                       size: 40,
                       color: Colors.white,
                     ),
-                    onPressed: () {
-                      // TODO: Camara o galeria
+                    onPressed: () async{
+                      final picker = ImagePicker();
+                      final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 100); 
+
+                      if( pickedFile == null){
+                        return; // No selecciono ninguna imagen
+                      }
+                      productService.updateSelectedProductImage(pickedFile.path);
                     },
                   ),
                 ),
@@ -77,12 +84,15 @@ class _ProductScreenBody extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.save_outlined),
-        onPressed: () async{
+        onPressed:  productService.isSaving ? null : () async{
           if(!productForm.isValidForm()) return;
+          final String? imageUrl = await productService.uploadImage();
+          if(imageUrl != null) productForm.product.picture = imageUrl;
           await productService.saveOrCreateProduct(productForm.product);
-          
         },
+        child: productService.isSaving
+        ? const CircularProgressIndicator( color: Colors.white,)
+        : const Icon(Icons.save_outlined),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );

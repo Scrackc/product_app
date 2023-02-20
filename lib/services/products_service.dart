@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
@@ -7,9 +8,11 @@ import 'package:http/http.dart' as http;
 class ProductsService extends ChangeNotifier {
   final String _baseUrl = 'flutter-varios-78524-default-rtdb.firebaseio.com';
   final List<Product> products = [];
+  late Product selectedProduct; // Cuando lo vayamos a utilizar ya debe de tener un valor (late)
+  File? newPictureFile;
+
   bool isLoading = true;
   bool isSaving = false;
-  late Product selectedProduct; // Cuando lo vayamos a utilizar ya debe de tener un valor (late)
 
   ProductsService() {
     loadProducts();
@@ -73,4 +76,37 @@ class ProductsService extends ChangeNotifier {
     
     return product.id!;
   }
+
+  void updateSelectedProductImage(String path){
+    selectedProduct.picture = path;
+    newPictureFile = File.fromUri(Uri(path: path));
+    notifyListeners();
+  }
+
+  Future<String?> uploadImage()async{
+    if(newPictureFile == null) return null;
+
+    isSaving = true;
+    notifyListeners();
+
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/key/image/upload?upload_preset=sxcjvl7k');
+
+    // Creamos la petición
+    final imageUploadRequest = http.MultipartRequest('POST',url);
+    // Creamos el archivo a subir
+    final file = await http.MultipartFile.fromPath('file', newPictureFile!.path);
+    // Adjuntamos el archivo a la petición
+    imageUploadRequest.files.add(file);
+
+    final streamResponse = await imageUploadRequest.send();
+    final response = await http.Response.fromStream(streamResponse);
+  
+    newPictureFile = null; // Limpiar la imagen 
+  
+    final decodeData = json.decode(response.body);
+    return decodeData['secure_url'];
+  
+
+  }
+
 }

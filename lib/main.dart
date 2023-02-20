@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         )
       ),
       title: 'Productos App',
-      initialRoute: HomeScreen.routerName,
+      initialRoute: LoginScreen.routerName,
       routes: {
         HomeScreen.routerName:(_) => const HomeScreen() ,
         LoginScreen.routerName: (_) => const LoginScreen(),
