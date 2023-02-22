@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:productos_app/models/models.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,6 +15,8 @@ class ProductsService extends ChangeNotifier {
   bool isLoading = true;
   bool isSaving = false;
 
+  final _storage = const FlutterSecureStorage();
+
   ProductsService() {
     loadProducts();
   }
@@ -24,9 +27,11 @@ class ProductsService extends ChangeNotifier {
     isLoading = true; 
     notifyListeners();
 
-    final url = Uri.https(_baseUrl, 'products.json');
+    final url = Uri.https(_baseUrl, 'products.json',{
+      'auth': await _storage.read(key: 'token') ?? ''
+    });
+    
     final resp = await http.get(url);
-
     final Map<String, dynamic> productsMap = json.decode(resp.body);
 
     productsMap.forEach((key, value) {
@@ -39,6 +44,7 @@ class ProductsService extends ChangeNotifier {
     notifyListeners();
 
     return products;
+
   }
 
   Future saveOrCreateProduct(Product product)async{
@@ -58,7 +64,9 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future<String> updateProduct( Product product)async{
-    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json',{
+      'auth': await _storage.read(key: 'token') ?? ''
+    });
     final resp = await http.put(url, body: product.toRawJson());
     final decodeData =  Product.fromRawJson(resp.body);
     decodeData.id = product.id;
@@ -68,7 +76,9 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future<String> createProduct(Product product) async {
-    final url = Uri.https(_baseUrl, 'products.json');
+    final url = Uri.https(_baseUrl, 'products.json',{
+      'auth': await _storage.read(key: 'token') ?? ''
+    });
     final resp = await http.post(url, body: product.toRawJson());
     final decodeData = json.decode(resp.body);
     product.id = decodeData['name'];
@@ -89,7 +99,7 @@ class ProductsService extends ChangeNotifier {
     isSaving = true;
     notifyListeners();
 
-    final url = Uri.parse('https://api.cloudinary.com/v1_1/key/image/upload?upload_preset=sxcjvl7k');
+    final url = Uri.parse('https://api.cloudinary.com/v1_1//image/upload?upload_preset=sxcjvl7k');
 
     // Creamos la petición
     final imageUploadRequest = http.MultipartRequest('POST',url);

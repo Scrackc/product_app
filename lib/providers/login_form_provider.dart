@@ -18,28 +18,4 @@ class LoginFormProvider extends ChangeNotifier {
   bool isValidForm(){
     return formKey.currentState?.validate() ?? false;
   }
-
-
-
-  // LoginFormProvider({
-  //   required this.email,
-  //   required this.password,
-  // });
-
-
-  // factory LoginFormProvider.fromRawJson(String str) =>
-  //     LoginFormProvider.fromJson(json.decode(str));
-
-  // String toRawJson() => json.encode(toJson());
-
-  // factory LoginFormProvider.fromJson(Map<String, dynamic> json) =>
-  //     LoginFormProvider(
-  //       email: json["email"],
-  //       password: json["password"],
-  //     );
-
-  // Map<String, dynamic> toJson() => {
-  //       "email": email,
-  //       "password": password,
-  //     };
 }

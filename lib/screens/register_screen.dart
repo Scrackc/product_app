@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/screens/screens.dart';
+import 'package:productos_app/services/services.dart';
 import 'package:productos_app/ui/input_decorations.dart';
 import 'package:productos_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../services/services.dart';
-
-class LoginScreen extends StatelessWidget {
-  static const String routerName = 'login';
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatelessWidget {
+  static const String routerName = 'register';
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class LoginScreen extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      "Login",
+                      "Registrar",
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(
@@ -46,16 +45,16 @@ class LoginScreen extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () => Navigator.pushReplacementNamed(
-                    context, RegisterScreen.routerName),
+                    context, LoginScreen.routerName),
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
-                  shape: MaterialStateProperty.all(const StadiumBorder())
-                ),
+                    overlayColor: MaterialStateProperty.all(
+                        Colors.indigo.withOpacity(0.1)),
+                    shape: MaterialStateProperty.all(const StadiumBorder())),
                 child: const Text(
-                  "Crear una nueva cuenta",
+                  "¿Ya tienes una cuenta?",
                   style: TextStyle(fontSize: 18, color: Colors.black87),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -126,22 +125,22 @@ class _LoginForm extends StatelessWidget {
               onPressed: loginForm.isLoading
                   ? null
                   : () async {
-                      final navigator = Navigator.of(context);
+                      final navigator = Navigator.of(context); 
                       FocusScope.of(context).unfocus(); // Quitar el teclado
-                      final autHService =
-                          Provider.of<AuthService>(context, listen: false);
+                      final autHService = Provider.of<AuthService>(context, listen: false);
                       if (!loginForm.isValidForm()) return;
                       loginForm.isLoading = true;
+                      
+                      final String? errorMessage = await autHService.createUser(loginForm.email, loginForm.password);
 
-                      final String? errorMessage = await autHService
-                          .login(loginForm.email, loginForm.password);
 
-                      if (errorMessage == null) {
+                      if(errorMessage == null){
                         navigator.pushReplacementNamed(HomeScreen.routerName);
-                      } else {
-                        NotificationsService.showSnackbar(errorMessage);
+                      }else{
+                        NotificationsService.showSnackbar(errorMessage);                         NotificationsService.showSnackbar(errorMessage);
                         loginForm.isLoading = false;
                       }
+
                     },
               child: Container(
                 padding:
